@@ -1,131 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Timer Game</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        height: 100vh;
-        background-color: #f4f4f4;
-      }
-      .timer {
-        font-size: 3rem;
-        margin: 20px;
-      }
-      .winner {
-        font-size: 2rem;
-        color: green;
-      }
-      .input-container {
-        margin: 20px;
-      }
-      input {
-        padding: 10px;
-        font-size: 1rem;
-      }
-      button {
-        padding: 10px 20px;
-        font-size: 1rem;
-        margin-left: 10px;
-        cursor: pointer;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Two-Participant Timer Game</h1>
-    <div class="input-container">
-      <input type="number" id="timeInput" placeholder="Enter time in seconds" />
-      <button onclick="startGame()">Start Game</button>
-    </div>
-    <div id="gameArea">
-      <p class="timer" id="playerATimer">Player A: 0s</p>
-      <p class="timer" id="playerBTimer">Player B: 0s</p>
-      <p id="winnerMessage" class="winner"></p>
-    </div>
-    <script>
-      let playerATime = 0;
-      let playerBTime = 0;
-      let currentPlayer = "A";
-      let gameInterval = null;
-      let gameTime = 0;
 
-      function startGame() {
-        const timeInput = document.getElementById("timeInput").value;
-        gameTime = parseInt(timeInput);
-        if (isNaN(gameTime) || gameTime <= 0) {
-          alert("Please enter a valid time in seconds.");
-          return;
-        }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timer Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+    }
 
-        resetTimers();
-        currentPlayer = "A";
-        updateTimers();
-        document.getElementById("winnerMessage").textContent = "";
+    .timer {
+      font-size: 3rem;
+      margin: 20px;
+    }
 
-        if (gameInterval) {
-          clearInterval(gameInterval);
-        }
+    .winner {
+      font-size: 2rem;
+      color: green;
+    }
 
-        gameInterval = setInterval(() => {
-          if (currentPlayer === "A") {
-            playerATime++;
-            if (playerATime >= gameTime) {
-              endGame("Player B");
-            }
-          } else {
-            playerBTime++;
-            if (playerBTime >= gameTime) {
-              endGame("Player A");
-            }
-          }
-          updateTimers();
-        }, 1000);
+    .input-container {
+      margin: 20px;
+    }
 
-        document.addEventListener("keydown", handleSpacebar);
+    input {
+      padding: 10px;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    .switch-btn {
+      margin-top: 20px;
+    }
+
+    .game {
+      margin: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Two-Participant Timer Game</h1>
+  <div class="input-container">
+    <input type="number" id="timeInput" placeholder="Enter time in seconds" />
+    <button class="game" onclick="startGame()">Start Game</button>
+  </div>
+  <div id="gameArea">
+    <p class="timer" id="playerATimer">Player A: 0s</p>
+    <p class="timer" id="playerBTimer">Player B: 0s</p>
+    <p id="winnerMessage" class="winner"></p>
+    <button class="switch-btn" onclick="switchPlayer()">Switch Player</button>
+  </div>
+  <script>
+    let playerATime = 0;
+    let playerBTime = 0;
+    let currentPlayer = "A";
+    let gameInterval = null;
+    let gameTime = 0;
+
+    function startGame() {
+      const timeInput = document.getElementById("timeInput").value;
+      gameTime = parseInt(timeInput);
+      if (isNaN(gameTime) || gameTime <= 0) {
+        alert("Please enter a valid time in seconds.");
+        return;
       }
 
-      function handleSpacebar(event) {
-        if (event.code === "Space") {
-          if (currentPlayer === "A") {
-            playerATime = 0;
-            currentPlayer = "B";
-          } else {
-            playerBTime = 0;
-            currentPlayer = "A";
-          }
-          updateTimers();
-        }
-      }
+      resetTimers();
+      currentPlayer = "A";
+      updateTimers();
+      document.getElementById("winnerMessage").textContent = "";
 
-      function resetTimers() {
-        playerATime = 0;
-        playerBTime = 0;
-      }
-
-      function updateTimers() {
-        document.getElementById(
-          "playerATimer"
-        ).textContent = `Player A: ${playerATime}s`;
-        document.getElementById(
-          "playerBTimer"
-        ).textContent = `Player B: ${playerBTime}s`;
-      }
-
-      function endGame(winner) {
+      if (gameInterval) {
         clearInterval(gameInterval);
-        document.getElementById(
-          "winnerMessage"
-        ).textContent = `${winner} wins!`;
-        document.removeEventListener("keydown", handleSpacebar);
       }
-    </script>
-  </body>
+
+      gameInterval = setInterval(() => {
+        if (currentPlayer === "A") {
+          playerATime++;
+          if (playerATime >= gameTime) {
+            endGame("Player B");
+          }
+        } else {
+          playerBTime++;
+          if (playerBTime >= gameTime) {
+            endGame("Player A");
+          }
+        }
+        updateTimers();
+      }, 1000);
+
+      document.addEventListener("keydown", handleSpacebar);
+    }
+
+    function handleSpacebar(event) {
+      if (event.code === "Space") {
+        switchPlayer();
+      }
+    }
+
+    function switchPlayer() {
+      if (currentPlayer === "A") {
+        playerATime = 0;
+        currentPlayer = "B";
+      } else {
+        playerBTime = 0;
+        currentPlayer = "A";
+      }
+      updateTimers();
+    }
+
+    function resetTimers() {
+      playerATime = 0;
+      playerBTime = 0;
+    }
+
+    function updateTimers() {
+      document.getElementById(
+        "playerATimer"
+      ).textContent = `Player A: ${playerATime}s`;
+      document.getElementById(
+        "playerBTimer"
+      ).textContent = `Player B: ${playerBTime}s`;
+    }
+
+    function endGame(winner) {
+      clearInterval(gameInterval);
+      document.getElementById(
+        "winnerMessage"
+      ).textContent = `${winner} wins!`;
+      document.removeEventListener("keydown", handleSpacebar);
+    }
+  </script>
+</body>
+
 </html>
